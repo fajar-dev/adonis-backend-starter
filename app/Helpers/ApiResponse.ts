@@ -21,6 +21,23 @@ export default class ApiResponse {
   }
 
   /**
+   * Send a created response with data and an optional message
+   *
+   * @param response - HttpContext response object
+   * @param data - Data to be sent in the response
+   * @param message - Optional message to include in the response
+   */
+  public static sendCreated(
+    response: HttpContextContract['response'],
+    data: any,
+    message?: string
+  ) {
+    const responseData = { success: true, message, data }
+
+    return response.status(201).json(responseData)
+  }
+
+  /**
    * Send an error response with a specific status code, message, and optional data
    *
    * @param response - HttpContext response object
@@ -41,6 +58,26 @@ export default class ApiResponse {
     }
 
     return response.status(statusCode).json(errorResponse)
+  }
+
+  /**
+   * Send an internal server error response with an optional custom message
+   * The message is displayed in development mode, while in production, a generic message is shown.
+   *
+   * @param response - HttpContext response object
+   * @param message - Optional custom message for internal server error
+   */
+  public static sendInternalServerError(
+    response: HttpContextContract['response'],
+    message: string = 'Internal Server Error'
+  ) {
+    const isProduction = process.env.NODE_ENV === 'production'
+
+    if (isProduction) {
+      return this.sendError(response, 500, 'Internal Server Error')
+    } else {
+      return this.sendError(response, 500, message)
+    }
   }
 
   /**

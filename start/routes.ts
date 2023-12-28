@@ -23,3 +23,8 @@ import Route from '@ioc:Adonis/Core/Route'
 Route.get('/', async () => {
   return { hello: 'world' }
 })
+
+Route.get('/role', 'RolesController.index')
+Route.post('/role', 'RolesController.store')
+Route.put('/role/:id', 'RolesController.update')
+Route.delete('/role/:id', 'RolesController.destroy')
