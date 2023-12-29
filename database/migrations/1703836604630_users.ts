@@ -7,8 +7,9 @@ export default class extends BaseSchema {
     this.schema.createTable(this.tableName, (table) => {
       table.uuid('id').primary()
       table.string('name').notNullable()
-      table.string('email').notNullable().unique()
-      table.string('password').notNullable()
+      table.string('email', 255).notNullable().unique()
+      table.string('password', 180).notNullable()
+      table.string('remember_me_token').nullable()
       table.string('image')
       table
         .uuid('role_id')
@@ -19,10 +20,10 @@ export default class extends BaseSchema {
         .onUpdate('RESTRICT')
         .notNullable()
       /**
-       * Uses timestamptz for PostgreSQL and DATETIME2 for MSSQL
+       * Uses timestampz for PostgreSQL and DATETIME2 for MSSQL
        */
-      table.timestamp('created_at', { useTz: true })
-      table.timestamp('updated_at', { useTz: true })
+      table.timestamp('created_at', { useTz: true }).notNullable()
+      table.timestamp('updated_at', { useTz: true }).notNullable()
     })
   }
 
