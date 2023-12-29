@@ -28,3 +28,8 @@ Route.get('/role', 'RolesController.index')
 Route.post('/role', 'RolesController.store')
 Route.put('/role/:id', 'RolesController.update')
 Route.delete('/role/:id', 'RolesController.destroy')
+
+Route.get('/user', 'UsersController.index')
+Route.post('/user', 'UsersController.store')
+Route.put('/user/:id', 'UsersController.update')
+Route.delete('/user/:id', 'UsersController.destroy')

@@ -6,9 +6,9 @@ export default class extends BaseSchema {
   public async up() {
     this.schema.createTable(this.tableName, (table) => {
       table.uuid('id').primary()
-      table.string('name')
-      table.string('email')
-      table.string('password')
+      table.string('name').notNullable()
+      table.string('email').notNullable().unique()
+      table.string('password').notNullable()
       table.string('image')
       table
         .uuid('role_id')
@@ -17,6 +17,7 @@ export default class extends BaseSchema {
         .inTable('roles')
         .onDelete('CASCADE')
         .onUpdate('RESTRICT')
+        .notNullable()
       /**
        * Uses timestamptz for PostgreSQL and DATETIME2 for MSSQL
        */

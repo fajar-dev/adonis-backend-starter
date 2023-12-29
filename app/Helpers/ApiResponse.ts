@@ -49,9 +49,10 @@ export default class ApiResponse {
     response: HttpContextContract['response'],
     statusCode: number,
     message: string,
+    errors?: any,
     data?: any
   ) {
-    const errorResponse = { success: false, error: { code: statusCode, message } }
+    const errorResponse = { success: false, message, error: { code: statusCode, errors } }
 
     if (data) {
       errorResponse['data'] = data

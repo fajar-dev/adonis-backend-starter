@@ -25,7 +25,7 @@ export default class User extends BaseModel {
   public image: string
 
   @column()
-  public roleId: number
+  public roleId: string
 
   @belongsTo(() => Role)
   public role: BelongsTo<typeof Role>
