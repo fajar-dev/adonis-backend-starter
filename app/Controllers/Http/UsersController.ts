@@ -2,7 +2,6 @@ import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import User from 'App/Models/User'
 import ApiResponse from 'App/Helpers/ApiResponse'
 import { schema, ValidationException, rules } from '@ioc:Adonis/Core/Validator'
-import Hash from '@ioc:Adonis/Core/Hash'
 import Application from '@ioc:Adonis/Core/Application'
 
 export default class UsersController {
@@ -25,7 +24,7 @@ export default class UsersController {
           size: '2mb',
           extnames: ['jpg', 'gif', 'png'],
         }),
-        roleId: schema.string([rules.exists({ table: 'roles', column: 'id' })]),
+        roleId: schema.string.optional([rules.exists({ table: 'roles', column: 'id' })]),
       })
       const payload = await request.validate({ schema: newRoleSchema })
 
@@ -35,7 +34,7 @@ export default class UsersController {
       const user = new User()
       user.name = payload.name
       user.email = payload.email
-      user.password = await Hash.make(payload.password)
+      user.password = payload.password
       user.image = payload.image?.clientName
       user.roleId = payload.roleId
       const data = await user.save()
@@ -65,7 +64,7 @@ export default class UsersController {
           size: '2mb',
           extnames: ['jpg', 'gif', 'png'],
         }),
-        roleId: schema.string([rules.exists({ table: 'roles', column: 'id' })]),
+        roleId: schema.string.optional([rules.exists({ table: 'roles', column: 'id' })]),
       })
       const payload = await request.validate({ schema: newRoleSchema })
 
@@ -79,7 +78,7 @@ export default class UsersController {
       user.name = payload.name
       user.email = payload.email
       if (payload.password) {
-        user.password = await Hash.make(payload.password)
+        user.password = payload.password
       }
       user.roleId = payload.roleId
       if (payload.image) {
@@ -98,7 +97,8 @@ export default class UsersController {
 
   public async destroy({ response, params }: HttpContextContract) {
     try {
-      const user = await User.findOrFail(params.id)
+      const user = await User.find(params.id)
+      if (!user) return ApiResponse.sendBadRequest(response, 'No data to delete.')
       const data = await user.delete()
       ApiResponse.sendSuccess(response, data, 'Roles deleted successfully')
     } catch (error) {

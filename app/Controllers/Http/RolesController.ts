@@ -52,7 +52,8 @@ export default class RolesController {
 
   public async destroy({ response, params }: HttpContextContract) {
     try {
-      const role = await Role.findOrFail(params.id)
+      const role = await Role.find(params.id)
+      if (!role) return ApiResponse.sendBadRequest(response, 'No data to delete.')
       const data = await role.delete()
       ApiResponse.sendSuccess(response, data, 'Roles deleted successfully')
     } catch (error) {

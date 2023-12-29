@@ -18,7 +18,7 @@ export default class extends BaseSchema {
         .inTable('roles')
         .onDelete('CASCADE')
         .onUpdate('RESTRICT')
-        .notNullable()
+        .nullable()
       /**
        * Uses timestampz for PostgreSQL and DATETIME2 for MSSQL
        */
