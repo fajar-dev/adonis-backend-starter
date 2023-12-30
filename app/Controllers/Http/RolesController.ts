@@ -22,10 +22,10 @@ export default class RolesController {
   }
 
   public async update({ request, response, params }: HttpContextContract) {
-    const newRoleSchema = schema.create({
+    const updateRoleSchema = schema.create({
       name: schema.string(),
     })
-    const payload = await request.validate({ schema: newRoleSchema })
+    const payload = await request.validate({ schema: updateRoleSchema })
 
     const role = await Role.find(params.id)
     if (!role) return ApiResponse.badRequest(response, 'No data to update.')

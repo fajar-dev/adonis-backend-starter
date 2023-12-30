@@ -11,7 +11,7 @@ export default class UsersController {
   }
 
   public async store({ request, response }: HttpContextContract) {
-    const newRoleSchema = schema.create({
+    const newUserSchema = schema.create({
       name: schema.string(),
       email: schema.string([rules.email(), rules.unique({ table: 'users', column: 'email' })]),
       password: schema.string([rules.minLength(6)]),
@@ -21,7 +21,7 @@ export default class UsersController {
       }),
       roleId: schema.string.optional([rules.exists({ table: 'roles', column: 'id' })]),
     })
-    const payload = await request.validate({ schema: newRoleSchema })
+    const payload = await request.validate({ schema: newUserSchema })
 
     // Handle file upload for the image
     await payload.image.move(Application.publicPath('user'))
@@ -37,7 +37,7 @@ export default class UsersController {
   }
 
   public async update({ params, request, response }: HttpContextContract) {
-    const newRoleSchema = schema.create({
+    const updateUserSchema = schema.create({
       name: schema.string(),
       email: schema.string([
         rules.email(),
@@ -54,7 +54,7 @@ export default class UsersController {
       }),
       roleId: schema.string.optional([rules.exists({ table: 'roles', column: 'id' })]),
     })
-    const payload = await request.validate({ schema: newRoleSchema })
+    const payload = await request.validate({ schema: updateUserSchema })
 
     // Handle file upload for the image
     if (payload.image) {
