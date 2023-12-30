@@ -28,6 +28,8 @@ Route.post('/auth/register', 'AuthController.register')
 Route.post('/auth/login', 'AuthController.login')
 Route.post('/auth/logout', 'AuthController.logout')
 Route.get('/auth/me', 'AuthController.me')
+Route.post('/auth/forget', 'AuthController.forget')
+Route.post('/auth/reset', 'AuthController.reset')
 
 Route.get('/role', 'RolesController.index')
 Route.post('/role', 'RolesController.store')
