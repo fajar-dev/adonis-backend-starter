@@ -44,6 +44,10 @@ export default class ExceptionHandler extends HttpExceptionHandler {
       return ApiResponse.unauthorized(ctx.response, error.message)
     }
 
+    if (error.code === 'E_UNAUTHORIZED_ACCESS') {
+      return ApiResponse.unauthorized(ctx.response, error.message)
+    }
+
     /**
      * Forward rest of the exceptions to the parent class
      */

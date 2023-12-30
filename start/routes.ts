@@ -20,23 +20,26 @@
 
 import Route from '@ioc:Adonis/Core/Route'
 
+import authRoutes from './routes/api/v1/auth/auth'
+import roleRoutes from './routes/api/v1/role/role'
+import userRouter from './routes/api/v1/user/user'
+
 Route.get('/', async () => {
   return { hello: 'world' }
 })
 
-Route.post('/auth/register', 'AuthController.register')
-Route.post('/auth/login', 'AuthController.login')
-Route.post('/auth/logout', 'AuthController.logout')
-Route.get('/auth/me', 'AuthController.me')
-Route.post('/auth/forget', 'AuthController.forget')
-Route.post('/auth/reset', 'AuthController.reset')
+Route.group(() => {
+  Route.group(() => {
+    Route.group(() => {
+      authRoutes()
+    })
 
-Route.get('/role', 'RolesController.index')
-Route.post('/role', 'RolesController.store')
-Route.put('/role/:id', 'RolesController.update')
-Route.delete('/role/:id', 'RolesController.destroy')
+    Route.group(() => {
+      roleRoutes()
+    }).middleware('auth')
 
-Route.get('/user', 'UsersController.index')
-Route.post('/user', 'UsersController.store')
-Route.put('/user/:id', 'UsersController.update')
-Route.delete('/user/:id', 'UsersController.destroy')
+    Route.group(() => {
+      userRouter()
+    }).middleware('auth')
+  }).prefix('/v1')
+}).prefix('/api')
