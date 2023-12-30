@@ -33,7 +33,7 @@ export default class User extends BaseModel {
   public rememberMeToken: string | null
 
   @column()
-  public image: string
+  public image: string | null
 
   @column()
   public roleId: string | undefined

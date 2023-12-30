@@ -7,17 +7,30 @@ export default class ApiResponse {
    * Send a success response with data and an optional message
    *
    * @param response - HttpContext response object
+   * @param statusCode - HTTP status code for the error
    * @param data - Data to be sent in the response
    * @param message - Optional message to include in the response
    */
   public static sendSuccess(
     response: HttpContextContract['response'],
+    statusCode: number,
     data: any,
     message?: string
   ) {
     const responseData = { success: true, message, data }
 
-    return response.status(200).json(responseData)
+    return response.status(statusCode).json(responseData)
+  }
+
+  /**
+   * Send a Ok response with data and an optional message
+   *
+   * @param response - HttpContext response object
+   * @param data - Data to be sent in the response
+   * @param message - Optional message to include in the response
+   */
+  public static ok(response: HttpContextContract['response'], data: any, message?: string) {
+    return this.sendSuccess(response, 200, data, message)
   }
 
   /**
@@ -27,14 +40,8 @@ export default class ApiResponse {
    * @param data - Data to be sent in the response
    * @param message - Optional message to include in the response
    */
-  public static sendCreated(
-    response: HttpContextContract['response'],
-    data: any,
-    message?: string
-  ) {
-    const responseData = { success: true, message, data }
-
-    return response.status(201).json(responseData)
+  public static created(response: HttpContextContract['response'], data: any, message?: string) {
+    return this.sendSuccess(response, 201, data, message)
   }
 
   /**
@@ -67,17 +74,19 @@ export default class ApiResponse {
    *
    * @param response - HttpContext response object
    * @param message - Optional custom message for internal server error
+   * @param errors - error stack to display
    */
-  public static sendInternalServerError(
+  public static internalServerError(
     response: HttpContextContract['response'],
-    message: string = 'Internal Server Error'
+    message: string = 'Internal Server Error',
+    errors: any
   ) {
     const isProduction = process.env.NODE_ENV === 'production'
 
     if (isProduction) {
       return this.sendError(response, 500, 'Internal Server Error')
     } else {
-      return this.sendError(response, 500, message)
+      return this.sendError(response, 500, message, errors)
     }
   }
 
@@ -87,10 +96,7 @@ export default class ApiResponse {
    * @param response - HttpContext response object
    * @param message - Custom message for not found error
    */
-  public static sendNotFound(
-    response: HttpContextContract['response'],
-    message: string = 'Not Found'
-  ) {
+  public static notFound(response: HttpContextContract['response'], message: string = 'Not Found') {
     return this.sendError(response, 404, message)
   }
 
@@ -100,7 +106,7 @@ export default class ApiResponse {
    * @param response - HttpContext response object
    * @param message - Custom message for bad request error
    */
-  public static sendBadRequest(
+  public static badRequest(
     response: HttpContextContract['response'],
     message: string = 'Bad Request'
   ) {
@@ -113,7 +119,7 @@ export default class ApiResponse {
    * @param response - HttpContext response object
    * @param message - Optional custom message for unauthorized error
    */
-  public static sendUnauthorized(
+  public static unauthorized(
     response: HttpContextContract['response'],
     message: string = 'Unauthorized'
   ) {
@@ -126,7 +132,7 @@ export default class ApiResponse {
    * @param response - HttpContext response object
    * @param message - Optional custom message for forbidden error
    */
-  public static sendForbidden(
+  public static forbidden(
     response: HttpContextContract['response'],
     message: string = 'Forbidden'
   ) {
@@ -139,10 +145,7 @@ export default class ApiResponse {
    * @param response - HttpContext response object
    * @param message - Optional custom message for conflict error
    */
-  public static sendConflict(
-    response: HttpContextContract['response'],
-    message: string = 'Conflict'
-  ) {
+  public static conflict(response: HttpContextContract['response'], message: string = 'Conflict') {
     return this.sendError(response, 409, message)
   }
 
@@ -152,7 +155,7 @@ export default class ApiResponse {
    * @param response - HttpContext response object
    * @param errors - Validation errors object
    */
-  public static sendValidationError(response: HttpContextContract['response'], errors: any) {
+  public static validationError(response: HttpContextContract['response'], errors: any) {
     return this.sendError(response, 422, 'Validation Error', errors)
   }
 
@@ -162,7 +165,7 @@ export default class ApiResponse {
    * @param response - HttpContext response object
    * @param message - Optional custom message for method not allowed error
    */
-  public static sendMethodNotAllowed(
+  public static methodNotAllowed(
     response: HttpContextContract['response'],
     message: string = 'Method Not Allowed'
   ) {
@@ -175,7 +178,7 @@ export default class ApiResponse {
    * @param response - HttpContext response object
    * @param message - Optional custom message for gone error
    */
-  public static sendGone(response: HttpContextContract['response'], message: string = 'Gone') {
+  public static gone(response: HttpContextContract['response'], message: string = 'Gone') {
     return this.sendError(response, 410, message)
   }
 
@@ -185,7 +188,7 @@ export default class ApiResponse {
    * @param response - HttpContext response object
    * @param message - Optional custom message for precondition failed error
    */
-  public static sendPreconditionFailed(
+  public static preconditionFailed(
     response: HttpContextContract['response'],
     message: string = 'Precondition Failed'
   ) {
@@ -198,7 +201,7 @@ export default class ApiResponse {
    * @param response - HttpContext response object
    * @param message - Optional custom message for too many requests error
    */
-  public static sendTooManyRequests(
+  public static tooManyRequests(
     response: HttpContextContract['response'],
     message: string = 'Too Many Requests'
   ) {

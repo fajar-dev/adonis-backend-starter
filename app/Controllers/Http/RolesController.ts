@@ -1,63 +1,43 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import Role from 'App/Models/Role'
 import ApiResponse from 'App/Helpers/ApiResponse'
-import { schema, ValidationException } from '@ioc:Adonis/Core/Validator'
+import { schema } from '@ioc:Adonis/Core/Validator'
 
 export default class RolesController {
   public async index({ response }: HttpContextContract) {
-    try {
-      const data = await Role.all()
-      ApiResponse.sendSuccess(response, data, 'Roles retrieved successfully')
-    } catch (error) {
-      ApiResponse.sendInternalServerError(response, error.message)
-    }
+    const data = await Role.all()
+    return ApiResponse.ok(response, data, 'Roles retrieved successfully')
   }
 
   public async store({ request, response }: HttpContextContract) {
-    try {
-      const newRoleSchema = schema.create({
-        name: schema.string(),
-      })
-      const payload = await request.validate({ schema: newRoleSchema })
-      const role = new Role()
-      role.name = payload.name
-      const data = await role.save()
-      ApiResponse.sendCreated(response, data, 'Roles created successfully')
-    } catch (error) {
-      if (error instanceof ValidationException) {
-        return ApiResponse.sendValidationError(response, error.messages.errors)
-      }
-      ApiResponse.sendInternalServerError(response, error.message)
-    }
+    const newRoleSchema = schema.create({
+      name: schema.string(),
+    })
+    const payload = await request.validate({ schema: newRoleSchema })
+
+    const role = new Role()
+    role.name = payload.name
+    const data = await role.save()
+    return ApiResponse.created(response, data, 'Roles created successfully')
   }
 
   public async update({ request, response, params }: HttpContextContract) {
-    try {
-      const newRoleSchema = schema.create({
-        name: schema.string(),
-      })
-      const payload = await request.validate({ schema: newRoleSchema })
-      const role = await Role.find(params.id)
-      if (!role) return ApiResponse.sendBadRequest(response, 'No data to update.')
-      role.name = payload.name
-      const data = await role.save()
-      ApiResponse.sendSuccess(response, data, 'Roles updated successfully')
-    } catch (error) {
-      if (error instanceof ValidationException) {
-        return ApiResponse.sendValidationError(response, error.messages.errors)
-      }
-      ApiResponse.sendInternalServerError(response, error.message)
-    }
+    const newRoleSchema = schema.create({
+      name: schema.string(),
+    })
+    const payload = await request.validate({ schema: newRoleSchema })
+
+    const role = await Role.find(params.id)
+    if (!role) return ApiResponse.badRequest(response, 'No data to update.')
+    role.name = payload.name
+    const data = await role.save()
+    return ApiResponse.ok(response, data, 'Roles updated successfully')
   }
 
   public async destroy({ response, params }: HttpContextContract) {
-    try {
-      const role = await Role.find(params.id)
-      if (!role) return ApiResponse.sendBadRequest(response, 'No data to delete.')
-      const data = await role.delete()
-      ApiResponse.sendSuccess(response, data, 'Roles deleted successfully')
-    } catch (error) {
-      ApiResponse.sendInternalServerError(response, error.message)
-    }
+    const role = await Role.find(params.id)
+    if (!role) return ApiResponse.badRequest(response, 'No data to delete.')
+    const data = await role.delete()
+    return ApiResponse.ok(response, data, 'Roles deleted successfully')
   }
 }
