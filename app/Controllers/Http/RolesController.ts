@@ -4,9 +4,16 @@ import ApiResponse from 'App/Helpers/ApiResponse'
 import { schema } from '@ioc:Adonis/Core/Validator'
 
 export default class RolesController {
-  public async index({ response }: HttpContextContract) {
-    const data = await Role.all()
+  public async index({ request, response }: HttpContextContract) {
+    const page = request.input('page', 1)
+    const limit = request.input('limit', 10)
+    const data = await Role.query().paginate(page, limit)
     return ApiResponse.ok(response, data, 'Roles retrieved successfully')
+  }
+
+  public async show({ params, response }: HttpContextContract) {
+    const data = await Role.find(params.id)
+    return ApiResponse.ok(response, data, 'Roles show successfully')
   }
 
   public async store({ request, response }: HttpContextContract) {

@@ -5,8 +5,15 @@ import { schema, rules } from '@ioc:Adonis/Core/Validator'
 import Application from '@ioc:Adonis/Core/Application'
 
 export default class UsersController {
-  public async index({ response }: HttpContextContract) {
-    const data = await User.query().preload('role')
+  public async index({ request, response }: HttpContextContract) {
+    const page = request.input('page', 1)
+    const limit = request.input('limit', 10)
+    const data = await User.query().preload('role').paginate(page, limit)
+    return ApiResponse.ok(response, data, 'Roles retrieved successfully')
+  }
+
+  public async show({ params, response }: HttpContextContract) {
+    const data = await User.query().where('id', params.id).preload('role').first()
     return ApiResponse.ok(response, data, 'Roles retrieved successfully')
   }
 
